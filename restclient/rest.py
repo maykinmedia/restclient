@@ -88,11 +88,6 @@ class RestManager(object):
         
         return rd.clean(response)
 
-    def get_by_absolute_url(self, absolute_url, client=None):
-        obj = self.object_class(client.get(absolute_url).content, absolute_url=absolute_url)
-
-        return obj
-    
     def get(self, client=None, query=None, **kwargs):
         opts = self.object_class._meta
         # FIXME: This can be done once and retrieved every time...
