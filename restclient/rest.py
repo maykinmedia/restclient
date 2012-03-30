@@ -106,6 +106,11 @@ class RestManager(object):
     
         return self.object_class(response.content, client=client, absolute_url=response.request['PATH_INFO'])
 
+    def get_by_absolute_url(self, absolute_url, client=None):
+        obj = self.object_class(client.get(absolute_url).content, absolute_url=absolute_url)
+
+        return obj
+
 
 class RelatedResource(object):
     def __init__(self, field):
