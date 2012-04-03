@@ -106,6 +106,24 @@ class RestManager(object):
 
         return obj
 
+    def create(self, data=None, client=None):
+        if data is None:
+            data = {}
+
+#        resource = Resource(self.object_class._meta.list, client)
+        response = client.post(self.object_class._meta.list[0], data=data)
+
+        if response.status_code != 201:
+            raise RestServerException('Cannot create "%s" (%d): %s' % (resource.absolute_url, response.status_code, response.content))
+
+        # Check for path as return value. This is *NOT* a relative URL from the
+        # API URL but rather the complete path without the scheme and domain.
+        # Specifically, this behaviour is done by the Django test client.
+        created_resource = self.get_by_absolute_url(response['Location'], client=client)
+        # The above resource can therefore be incorrect. The object ID is fine
+        # though.
+        return created_resource #self.get(created_resource.get_object_id(), client=client)
+
 
 class RelatedResource(object):
     def __init__(self, field):
